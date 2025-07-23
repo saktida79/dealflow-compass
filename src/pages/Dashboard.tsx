@@ -13,7 +13,11 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  ArrowRight
+  ArrowRight,
+  PiggyBank,
+  Target,
+  CreditCard,
+  TrendingDown as Savings
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -93,6 +97,51 @@ const Dashboard = () => {
     { task: "Review MediHealth legal documents", deadline: "Tomorrow", priority: "Medium" },
     { task: "Schedule RetailChain integration meeting", deadline: "Dec 15", priority: "High" },
     { task: "Update FinServ valuation model", deadline: "Dec 18", priority: "Low" }
+  ];
+
+  const financialMetrics = [
+    {
+      title: "Monthly Budget",
+      value: "$3.2M",
+      spent: "$2.8M",
+      remaining: "$400K",
+      progress: 87,
+      icon: Target,
+      trend: "up",
+      change: "+15%"
+    },
+    {
+      title: "Cost Savings",
+      value: "$840K",
+      description: "Achieved this quarter",
+      icon: PiggyBank,
+      trend: "up",
+      change: "+22%"
+    },
+    {
+      title: "Operating Expenses",
+      value: "$1.9M",
+      description: "This month",
+      icon: CreditCard,
+      trend: "down",
+      change: "-8%"
+    },
+    {
+      title: "ROI",
+      value: "24.5%",
+      description: "Portfolio average",
+      icon: TrendingUp,
+      trend: "up",
+      change: "+3.2%"
+    }
+  ];
+
+  const departmentSpending = [
+    { department: "Legal", budgeted: 500000, actual: 480000, variance: -20000 },
+    { department: "Due Diligence", budgeted: 800000, actual: 850000, variance: 50000 },
+    { department: "Integration", budgeted: 600000, actual: 520000, variance: -80000 },
+    { department: "Technology", budgeted: 400000, actual: 390000, variance: -10000 },
+    { department: "Consulting", budgeted: 700000, actual: 720000, variance: 20000 }
   ];
 
   const getStatusColor = (status: string): "default" | "secondary" | "outline" | "destructive" => {
@@ -232,6 +281,89 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Financial Analysis */}
+      <Card className="border-border/50 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
+        <CardHeader>
+          <CardTitle>Financial Analysis</CardTitle>
+          <CardDescription>Budget tracking, cost analysis, and savings overview</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {financialMetrics.map((metric) => (
+              <div key={metric.title} className="p-4 rounded-lg border border-border/50 bg-background/50">
+                <div className="flex items-center justify-between mb-3">
+                  <metric.icon className="h-5 w-5 text-primary" />
+                  <div className="flex items-center gap-1 text-xs">
+                    {metric.trend === "up" ? (
+                      <TrendingUp className="h-3 w-3 text-success" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3 text-destructive" />
+                    )}
+                    <span className={metric.trend === "up" ? "text-success" : "text-destructive"}>
+                      {metric.change}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-lg font-bold">{metric.value}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {metric.description || `${metric.spent} spent`}
+                  </div>
+                  {metric.progress && (
+                    <div className="space-y-1">
+                      <Progress value={metric.progress} className="h-2" />
+                      <div className="text-xs text-muted-foreground">
+                        {metric.remaining} remaining
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold">Department Spending Analysis</h4>
+            <div className="rounded-lg border border-border/50">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Department</TableHead>
+                    <TableHead className="text-right">Budgeted</TableHead>
+                    <TableHead className="text-right">Actual</TableHead>
+                    <TableHead className="text-right">Variance</TableHead>
+                    <TableHead className="text-right">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {departmentSpending.map((dept) => (
+                    <TableRow key={dept.department}>
+                      <TableCell className="font-medium">{dept.department}</TableCell>
+                      <TableCell className="text-right">
+                        ${(dept.budgeted / 1000).toFixed(0)}K
+                      </TableCell>
+                      <TableCell className="text-right">
+                        ${(dept.actual / 1000).toFixed(0)}K
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className={dept.variance < 0 ? "text-success" : "text-destructive"}>
+                          {dept.variance < 0 ? "-" : "+"}${Math.abs(dept.variance / 1000).toFixed(0)}K
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant={dept.variance <= 0 ? "default" : "destructive"}>
+                          {dept.variance <= 0 ? "Under Budget" : "Over Budget"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Deal Pipeline Overview */}
       <Card className="border-border/50 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
