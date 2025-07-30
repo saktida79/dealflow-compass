@@ -7,6 +7,9 @@ import Dashboard from "./pages/Dashboard";
 import Deals from "./pages/Deals";
 import Clients from "./pages/Clients";
 import Integration from "./pages/Integration";
+import DueDiligence from "./pages/DueDiligence";
+import Analytics from "./pages/Analytics";
+import TaskManagement from "./pages/TaskManagement";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 
@@ -24,7 +27,10 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/deals" element={<Deals />} />
             <Route path="/clients" element={<Clients />} />
+            <Route path="/due-diligence" element={<DueDiligence />} />
+            <Route path="/tasks" element={<TaskManagement />} />
             <Route path="/integration" element={<Integration />} />
+            <Route path="/analytics" element={<Analytics />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

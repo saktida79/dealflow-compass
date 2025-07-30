@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import NotificationCenter from "./NotificationCenter";
 import { 
   Home, 
   Briefcase, 
@@ -12,19 +14,21 @@ import {
   GitMerge,
   Settings,
   Menu,
-  X
+  X,
+  User
 } from "lucide-react";
 
 const Navigation = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   const navigationItems = [
     { name: "Dashboard", href: "/", icon: Home },
     { name: "Deals", href: "/deals", icon: Briefcase },
     { name: "Clients", href: "/clients", icon: Users },
-    { name: "Financial Analysis", href: "/financial", icon: Calculator },
-    { name: "Documents", href: "/documents", icon: FileText },
+    { name: "Due Diligence", href: "/due-diligence", icon: FileText },
+    { name: "Tasks", href: "/tasks", icon: Calculator },
     { name: "Integration", href: "/integration", icon: GitMerge },
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
     { name: "Settings", href: "/settings", icon: Settings },
@@ -56,6 +60,20 @@ const Navigation = () => {
             </div>
             M&A Pro
           </Link>
+        </div>
+
+        {/* User Section */}
+        <div className="px-4 mb-4">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border/50">
+            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
+              {user?.name.split(' ').map(n => n[0]).join('') || 'U'}
+            </div>
+            <div className="flex-grow min-w-0">
+              <div className="text-sm font-medium truncate">{user?.name}</div>
+              <div className="text-xs text-muted-foreground truncate">{user?.role}</div>
+            </div>
+            <NotificationCenter />
+          </div>
         </div>
 
         <div className="px-4 space-y-2">
