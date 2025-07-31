@@ -10,6 +10,7 @@ import Integration from "./pages/Integration";
 import DueDiligence from "./pages/DueDiligence";
 import Analytics from "./pages/Analytics";
 import TaskManagement from "./pages/TaskManagement";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/tasks" element={<TaskManagement />} />
             <Route path="/integration" element={<Integration />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
