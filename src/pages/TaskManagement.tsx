@@ -7,6 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   CheckCircle2, 
   Clock, 
@@ -23,6 +27,17 @@ import {
 const TaskManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedView, setSelectedView] = useState("all");
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    priority: "",
+    assignee: "",
+    dealId: "",
+    dueDate: "",
+    category: "",
+    estimatedHours: ""
+  });
 
   const tasks = [
     {
@@ -170,6 +185,30 @@ const TaskManagement = () => {
     task.dealName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const deals = [
+    { id: "DEAL-001", name: "TechCorp Acquisition" },
+    { id: "DEAL-002", name: "MediHealth Merger" },
+    { id: "DEAL-003", name: "RetailChain Buyout" },
+    { id: "DEAL-004", name: "FinServ Joint Venture" },
+    { id: "DEAL-005", name: "EnergyFlow Acquisition" }
+  ];
+
+  const handleCreateTask = () => {
+    // TODO: Implement task creation logic with Supabase
+    console.log("Creating new task:", newTask);
+    setIsNewTaskOpen(false);
+    setNewTask({
+      title: "",
+      description: "",
+      priority: "",
+      assignee: "",
+      dealId: "",
+      dueDate: "",
+      category: "",
+      estimatedHours: ""
+    });
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -182,10 +221,133 @@ const TaskManagement = () => {
             Track tasks, milestones, and team collaboration across deals
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          New Task
-        </Button>
+        <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-elegant">
+              <Plus className="h-4 w-4" />
+              New Task
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Create New Task</DialogTitle>
+              <DialogDescription>
+                Add a new task to your deal pipeline. Assign team members and set deadlines.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="task-title">Task Title</Label>
+                <Input
+                  id="task-title"
+                  value={newTask.title}
+                  onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                  placeholder="e.g., Complete financial analysis"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="task-description">Description</Label>
+                <Textarea
+                  id="task-description"
+                  value={newTask.description}
+                  onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                  placeholder="Provide details about what needs to be accomplished..."
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="task-deal">Associated Deal</Label>
+                  <Select value={newTask.dealId} onValueChange={(value) => setNewTask({...newTask, dealId: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select deal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {deals.map((deal) => (
+                        <SelectItem key={deal.id} value={deal.id}>{deal.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="task-category">Category</Label>
+                  <Select value={newTask.category} onValueChange={(value) => setNewTask({...newTask, category: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Financial">Financial</SelectItem>
+                      <SelectItem value="Legal">Legal</SelectItem>
+                      <SelectItem value="Technology">Technology</SelectItem>
+                      <SelectItem value="Commercial">Commercial</SelectItem>
+                      <SelectItem value="HR">HR & People</SelectItem>
+                      <SelectItem value="Operations">Operations</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="task-priority">Priority</Label>
+                  <Select value={newTask.priority} onValueChange={(value) => setNewTask({...newTask, priority: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="task-assignee">Assignee</Label>
+                  <Select value={newTask.assignee} onValueChange={(value) => setNewTask({...newTask, assignee: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Assign to team member" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Alexandra Chen">Alexandra Chen</SelectItem>
+                      <SelectItem value="Sarah Johnson">Sarah Johnson</SelectItem>
+                      <SelectItem value="Mike Chen">Mike Chen</SelectItem>
+                      <SelectItem value="Lisa Wang">Lisa Wang</SelectItem>
+                      <SelectItem value="David Kim">David Kim</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="task-due-date">Due Date</Label>
+                  <Input
+                    id="task-due-date"
+                    type="date"
+                    value={newTask.dueDate}
+                    onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="task-hours">Estimated Hours</Label>
+                  <Input
+                    id="task-hours"
+                    type="number"
+                    value={newTask.estimatedHours}
+                    onChange={(e) => setNewTask({...newTask, estimatedHours: e.target.value})}
+                    placeholder="e.g., 8"
+                  />
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsNewTaskOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateTask} className="bg-gradient-primary hover:bg-gradient-primary/90">
+                Create Task
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Summary Cards */}
