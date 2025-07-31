@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Search,
   Filter,
@@ -20,6 +24,18 @@ import {
 
 const Deals = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isNewDealOpen, setIsNewDealOpen] = useState(false);
+  const [newDeal, setNewDeal] = useState({
+    company: "",
+    target: "",
+    type: "",
+    value: "",
+    priority: "",
+    advisor: "",
+    expectedClose: "",
+    sector: "",
+    description: ""
+  });
 
   const deals = [
     {
@@ -121,6 +137,23 @@ const Deals = () => {
     deal.advisor.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleCreateDeal = () => {
+    // TODO: Implement deal creation logic with Supabase
+    console.log("Creating new deal:", newDeal);
+    setIsNewDealOpen(false);
+    setNewDeal({
+      company: "",
+      target: "",
+      type: "",
+      value: "",
+      priority: "",
+      advisor: "",
+      expectedClose: "",
+      sector: "",
+      description: ""
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -133,10 +166,138 @@ const Deals = () => {
             Track and manage all M&A transactions from prospect to completion
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          New Deal
-        </Button>
+        <Dialog open={isNewDealOpen} onOpenChange={setIsNewDealOpen}>
+          <DialogTrigger asChild>
+            <Button className="gap-2 bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-elegant">
+              <Plus className="h-4 w-4" />
+              New Deal
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Create New Deal</DialogTitle>
+              <DialogDescription>
+                Add a new M&A deal to your pipeline. Fill in the essential information to get started.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="company">Acquiring Company</Label>
+                  <Input
+                    id="company"
+                    value={newDeal.company}
+                    onChange={(e) => setNewDeal({...newDeal, company: e.target.value})}
+                    placeholder="e.g., TechCorp Solutions"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="target">Target Company</Label>
+                  <Input
+                    id="target"
+                    value={newDeal.target}
+                    onChange={(e) => setNewDeal({...newDeal, target: e.target.value})}
+                    placeholder="e.g., CloudServ Inc."
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="type">Deal Type</Label>
+                  <Select value={newDeal.type} onValueChange={(value) => setNewDeal({...newDeal, type: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select deal type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Acquisition">Acquisition</SelectItem>
+                      <SelectItem value="Merger">Merger</SelectItem>
+                      <SelectItem value="Joint Venture">Joint Venture</SelectItem>
+                      <SelectItem value="Divestiture">Divestiture</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="value">Deal Value</Label>
+                  <Input
+                    id="value"
+                    value={newDeal.value}
+                    onChange={(e) => setNewDeal({...newDeal, value: e.target.value})}
+                    placeholder="e.g., $340M"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="sector">Sector</Label>
+                  <Select value={newDeal.sector} onValueChange={(value) => setNewDeal({...newDeal, sector: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select sector" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Technology">Technology</SelectItem>
+                      <SelectItem value="Healthcare">Healthcare</SelectItem>
+                      <SelectItem value="Financial">Financial Services</SelectItem>
+                      <SelectItem value="Energy">Energy</SelectItem>
+                      <SelectItem value="Retail">Retail</SelectItem>
+                      <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="priority">Priority</Label>
+                  <Select value={newDeal.priority} onValueChange={(value) => setNewDeal({...newDeal, priority: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="advisor">Lead Advisor</Label>
+                  <Input
+                    id="advisor"
+                    value={newDeal.advisor}
+                    onChange={(e) => setNewDeal({...newDeal, advisor: e.target.value})}
+                    placeholder="e.g., John Mitchell"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="expectedClose">Expected Close Date</Label>
+                  <Input
+                    id="expectedClose"
+                    type="date"
+                    value={newDeal.expectedClose}
+                    onChange={(e) => setNewDeal({...newDeal, expectedClose: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={newDeal.description}
+                  onChange={(e) => setNewDeal({...newDeal, description: e.target.value})}
+                  placeholder="Brief description of the deal rationale and key objectives..."
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsNewDealOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateDeal} className="bg-gradient-primary hover:bg-gradient-primary/90">
+                Create Deal
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Summary Cards */}
